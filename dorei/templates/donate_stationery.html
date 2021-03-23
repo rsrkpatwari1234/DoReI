@@ -1,0 +1,38 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <body class="img js-fullheight" style="background-color: #928DAB;">
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Make a Donation !!</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="login-wrap p-0">
+            <form action="#" class="signin-form">
+              <div class="form-group">
+                <select type="text" class="form-control" placeholder="Category" required>
+                    <option>Pencil</option>  
+                    <option>Eraser</option>  
+                    <option>School Bag</option>
+                    <option>Pen</option>
+                </select>
+              </div>
+               <div class="form-group">
+                <input type="number" class="form-control" min="1" max="20" placeholder="Quantity" required>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="form-control btn btn-primary submit px-3">Donate Item(s)</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </body>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <body class="img js-fullheight" style="background-color: #928DAB;">
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Welcome to Title</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="login-wrap p-0">
+            <h3 class="mb-4 text-center">Sign Up to our Portal!!</h3>
+            <form action="/dorei/new_user/" method="POST" class="signin-form">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
+              </div>
+               <div class="form-group">
+                <input type="text" name="middle_name" class="form-control" placeholder="Middle Name">
+              </div>
+               <div class="form-group">
+                <input type="text" name="last_name" class="form-control" placeholder="Last Name">
+              </div>
+              <div class="form-group">
+                <input type="email" name="email" class="form-control" placeholder="Email address" required>
+              </div>
+
+              <div class="form-group">
+                <input id="password-field" name="password" type="password" class="form-control" placeholder="Password" required>
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+              </div>
+
+              <div class="form-group">
+                <input id="password-field" name="repeat_password" type="password" class="form-control" placeholder="Confirm Password" required>
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+              </div>
+
+              <div class="col form-group">
+                  <input type="text" name="phone_no" class="form-control" placeholder="Phone No.">
+              </div>
+
+              <div class="row">
+                <div class="col form-group">
+                  <input type="text" name="house_no" class="form-control" placeholder="House No.">
+                </div>
+                <div class="col form-group">
+                  <input type="text" name="street_no" class="form-control" placeholder="Street No.">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <input type="text" name="street_name" class="form-control" placeholder="Street Name" >
+              </div>
+
+              <div class="form-group">
+                <input type="text" name="city" class="form-control" placeholder="City" >
+              </div>
+               <div class="form-group">
+                <input type="text" name="state" class="form-control" placeholder="State" >
+              </div>
+               <div class="form-group">
+                <input type="text" name="zipcode" class="form-control" placeholder="Zip code" >
+              </div>
+
+              
+              <div class="form-group">
+                <button type="submit" class="form-control btn btn-primary submit px-3">Sign Up!</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </body>
+
+{% endblock %}
