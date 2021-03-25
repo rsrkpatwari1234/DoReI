@@ -23,7 +23,7 @@ class User(models.Model):
     street_name = models.TextField(db_column='street_name', max_length=50)   
     city = models.TextField(db_column='city', max_length=50)  
     state = models.TextField(db_column='state', max_length=50)  
-    postal_code = models.DecimalField(db_column='zipcode', max_digits=6, decimal_places=0) 
+    postal_code = models.DecimalField(db_column='postal_code', max_digits=6, decimal_places=0) 
     password = models.CharField(db_column='password', max_length=256) 
 
     def __str__(self):

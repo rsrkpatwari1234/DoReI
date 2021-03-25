@@ -189,15 +189,21 @@ label {
   display: inline-block;
   margin-bottom: 0.5rem; }
 
-button {
+button,
+a {
   border-radius: 0; }
 
 button:focus {
   outline: 1px dotted;
   outline: 5px auto -webkit-focus-ring-color; }
 
+a:focus {
+  outline: 1px dotted;
+  outline: 5px auto -webkit-focus-ring-color; }
+
 input,
 button,
+a,
 select,
 optgroup,
 textarea {
@@ -207,10 +213,12 @@ textarea {
   line-height: inherit; }
 
 button,
+a,
 input {
   overflow: visible; }
 
 button,
+a,
 select {
   text-transform: none; }
 

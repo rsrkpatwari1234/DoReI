@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.http import HttpResponse
 from dorei.models import *
@@ -13,7 +13,8 @@ def insert_using_raw_sql(sql):
     try:
         cursor.execute(sql)
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
 
 def select_using_raw_sql(sql):
@@ -40,32 +41,92 @@ def select_using_raw_sql(sql):
 
 
 def logIn_user(request):
+
+    if request.method == "POST":
+        email = request.POST.get("email")
+        results = select_using_raw_sql("SELECT du.first_name,du.password FROM dorei_user AS du WHERE du.email_address='" + str(email) + "'")
+        
+        if results:
+            for user in results:
+                if user['password'] == request.POST.get("password"):
+                    return render(request, 'user_ui.html')
+        else:
+            messages.error(request, 'Email id or password does not match!')
+            
     return render(request, 'logInUser.html')
 
 def logIn_manager(request):
     return render(request, 'logInManager.html')
 
 def signUp(request):
-    return render(request, 'SignUp.html')
-
-def new_user_signup(request):
 
     if request.method == "POST":
         results = select_using_raw_sql("SELECT * FROM dorei_user")
         #print(results)
         print("Working.....")
+        count = 0
         for user in results:
             if user['email_address'] == request.POST.get("email"):
-                messages.warning(request, 'This email address has been taken!')
-                return render(request, 'SignUp.html')
+                messages.error(request, 'This email address has been taken!')
+                return render(request, 'SignUp.html') 
+
+            count = count + 1
+
+        if request.POST.get("password") != request.POST.get("repeat_password"):
+            messages.error(request, 'Password does not match!')
+            return render(request, 'SignUp.html')
+
+
+        UserId = count+1
+        FirstName = request.POST.get("first_name")
+        MiddleName = request.POST.get("middle_name")
+        LastName = request.POST.get("last_name")
+        Email = request.POST.get("email")
+        HouseNo = request.POST.get("house_no")
+        StreetNo = request.POST.get("street_no")
+        StreetName = request.POST.get("street_name")
+        City = request.POST.get("city")
+        State = request.POST.get("state")
+        PostalCode = request.POST.get("zipcode")
+        Password = request.POST.get("password")
+
+        if len(HouseNo) == 0:
+            HouseNo = 'NULL'
+        if len(StreetNo) == 0:
+            StreetNo = 'NULL'
+        if len(MiddleName) == 0:
+            MiddleName = 'NULL'
+        if len(LastName) == 0:
+            LastName = 'NULL'
+
+        print(type(UserId),type(FirstName),type(Email),type(HouseNo),type(StreetName),type(City),type(PostalCode),type(Password))
+
+        i = "dorei_user(user_id,postal_code,first_name,middle_name,last_name,email_address,house_number,street_number,street_name,city,state,password)"
+        j = "values("+str(UserId)+","+str(PostalCode)+",'"+str(FirstName)+"',"+str(MiddleName)+","+str(LastName)+",'"+str(Email)+"',"+str(HouseNo)+","+str(StreetNo)+",'"+str(StreetName)+"','"+str(City)+"','"+str(State)+"','"+str(Password)+"')"
         
-        messages.success(request, 'Your account has been created successfully!')
-        return render(request, 'SignUp.html')
+
+        command = "INSERT INTO " + i +" "+ j
+        if insert_using_raw_sql(command):
+            # insert phone number
+            messages.success(request, 'Your account has been created successfully!')
+            # return render(request, 'logInUser.html')
+            return redirect('/dorei/logInUser/')
+        else:
+            messages.error(request, 'Internal error! Try again.')
+            #return render(request, 'SignUp.html')  
+            return redirect('/dorei/signUp/')
+
+        # user = User.objects.create(user_id=UserId, email_address=Email, first_name=FirstName, middle_name=MiddleName,
+        #                            last_name=LastName, house_number=HouseNo, street_number=StreetNo, street_name=StreetName, 
+        #                            city=City, state=State, postal_code=PostalCode, password=Password)
+        # messages.success(request, 'Your account has been created successfully!')
+        # return render(request, 'logInUser.html')
+
     else:
-        return render(request, 'logInUser.html')
+        return render(request, 'SignUp.html')
 
 def signOut(request):
-    return render(request, 'logInUser.html')
+    return redirect('/dorei/logInUser/')
 
 def transaction(request):
     return render(request, 'user_ui.html')
@@ -79,4 +140,5 @@ def donate_book(request):
 def donate_stationery(request):
     return render(request, 'donate_stationery.html')
 
-
+def request(request):
+    return render(request, 'request.html')
