@@ -12,9 +12,10 @@
       <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
           <div class="login-wrap p-0">
-            <form action="#" class="signin-form">
+            <form action="{% url 'donate_stationery' user_id=user_id%}" method="POST" class="signin-form">
+              {% csrf_token %}
               <div class="form-group">
-                <select type="text" class="form-control" placeholder="Category" required>
+                <select type="text" name="stationery_name" class="form-control" placeholder="Category" required>
                     <option>Pencil</option>  
                     <option>Eraser</option>  
                     <option>School Bag</option>
@@ -22,7 +23,7 @@
                 </select>
               </div>
                <div class="form-group">
-                <input type="number" class="form-control" min="1" max="20" placeholder="Quantity" required>
+                <input type="number" name="tot_quantity" class="form-control" min="1" max="20" placeholder="Quantity" required>
               </div>
               <div class="form-group">
                 <button type="submit" class="form-control btn btn-primary submit px-3">Donate Item(s)</button>
