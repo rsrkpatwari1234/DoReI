@@ -10,7 +10,8 @@ urlpatterns = [
     path('donate_money/<int:user_id>/', views.donate_money, name='donate_money'),
     path('donate_book/<int:user_id>/', views.donate_book, name='donate_book'),
     path('donate_stationery/<int:user_id>/', views.donate_stationery, name='donate_stationery'),
-    path('request/', views.request, name='request'),
+    path('request_book/<int:user_id>/<str:isbn>/', views.request_book, name='request_book'),
+    path('request_stationery/<int:user_id>/<str:stationery_id>/', views.request_stationery, name='request_stationery'),
     # path('manage/', views.manage, name='manage'),
     path('signOut/', views.signOut, name='signOut'),
 ]

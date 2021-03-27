@@ -50,8 +50,17 @@ class BookDonate(models.Model):
     class Meta:
         unique_together = (('user_id', 'isbn'),)
 
+class BookRequest(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    isbn = models.ForeignKey(Book, on_delete=models.CASCADE, db_column='isbn')
+    t_time = models.DateTimeField(db_column='t_time')
+    is_delivered = models.BooleanField(db_column='is_delivered', default = False)
+
+    class Meta:
+        unique_together = (('user_id', 'isbn'),)
+
 class Stationery(models.Model):
-    stationery_id = models.IntegerField(db_column='stationery_id', primary_key=True)
+    stationery_id = models.AutoField(db_column='stationery_id', primary_key=True)
     stationery_name = models.CharField(db_column='stationery_name', max_length = 50)
     tot_quantity = models.IntegerField(db_column='tot_quantity',validators=[MinValueValidator(1)], blank=True, null=True)
     location_id = models.ForeignKey(Location, on_delete = models.DO_NOTHING,db_column='location_id', null=True, blank=True)
@@ -61,7 +70,17 @@ class StationeryDonate(models.Model):
     stationery_id = models.ForeignKey(Stationery, on_delete=models.CASCADE, db_column='stationery_id')
     t_time = models.DateTimeField(db_column='t_time')
     quantity = models.IntegerField(db_column='quantity', validators=[MinValueValidator(1)])
-    is_collected = models.BooleanField(db_column='is_collected',default = False)
+    is_collected = models.BooleanField(db_column='is_collected', default = False)
+
+    class Meta:
+        unique_together = (('user_id', 'stationery_id','t_time'),)
+
+class StationeryRequest(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
+    stationery_id = models.ForeignKey(Stationery, on_delete=models.CASCADE, db_column='stationery_id')
+    t_time = models.DateTimeField(db_column='t_time') 
+    quantity = models.IntegerField(db_column='quantity', validators=[MinValueValidator(0)])
+    is_delivered = models.BooleanField(db_column='is_delivered', default = False)
 
     class Meta:
         unique_together = (('user_id', 'stationery_id','t_time'),)

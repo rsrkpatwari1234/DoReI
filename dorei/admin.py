@@ -1,8 +1,6 @@
 from django.contrib import admin
+from dorei.models import *
 
-# Register your models here.
-
-from .models import Location, Book, User, Money, BookDonate, Stationery, StationeryDonate
 
 admin.site.register(Location)
 admin.site.register(Book)
@@ -10,5 +8,7 @@ admin.site.register(User)
 admin.site.register(Money)
 admin.site.register(BookDonate)
 admin.site.register(Stationery)
+admin.site.register(BookRequest)
 admin.site.register(StationeryDonate)
+admin.site.register(StationeryRequest)
 

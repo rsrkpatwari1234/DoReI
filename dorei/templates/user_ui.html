@@ -78,6 +78,177 @@
       {% endfor %}
     </table>
 
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
+          <h2 class="heading-section"><u>My Donations</u></h2>
+        </div>
+    </div>
+
+    <table style="width:100%">
+      {% for donation in m_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you donated Rs.{{donation.amount}}</td>
+      </tr>
+      {% endfor %}
+      {% for donation in br_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you successfully donated a book with title '{{donation.title}}' of '{{donation.author}}' on {{donation.subject}} </td>
+      </tr>
+      {% endfor %}
+      {% for donation in bnr_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you claimed to donate book with title '{{donation.title}}' of '{{donation.author}}' on {{donation.subject}} but haven't donated yet :(</td>
+      </tr>
+      {% endfor %}
+      {% for donation in sr_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you donated {{donation.quantity}} {{donation.name}}</td>
+      </tr>
+      {% endfor %}
+      {% for donation in snr_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you claimed to donate {{donation.quantity}} {{donation.name}} but haven't donated yet :(</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
+          <h2 class="heading-section"><u>My Requests</u></h2>
+        </div>
+    </div>
+
+    <table style="width:100%">
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <th>User Name</th>
+        <th>Stationery category</th>
+        <th>Quantity</th>
+        <th>Date & Time of Donation</th>
+      </tr>
+      {% for donation in recent_stationery_donation %}
+      <tr class="heading-section" style="color:#FFFFFF">
+        <td>{{donation.name}}</td>
+        <td>{{donation.category}}</td>
+        <td>{{donation.quantity}}</td>
+        <td>{{donation.t_time}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
+          <h2 class="heading-section"><u>Request for a Book</u></h2>
+          <h2 class="heading-section" style="color:#FFB6C1;">Go ahead and enter a subject to view the available books!</h2>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="login-wrap p-0">
+            <form action="{% url 'transaction' user_id=id%}" method="POST" class="signin-form">
+              {% csrf_token %}
+              <div class="form-group">
+                <select type="text" name="subject" class="form-control" placeholder="Subject" required>
+                    <option>{{subject}}</option>
+                    <option>Physics</option>  
+                    <option>Chemistry</option>  
+                    <option>Biology</option>
+                    <option>Mathematics</option>
+                    <option>English language</option>
+                    <option>English literature</option>
+                    <option>Hindi</option>
+                    <option>Geography</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="form-control btn btn-primary submit px-3">Check Books!</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {% if subject != 'Select a Subject'%}
+      <table style="width:100%">
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <th>Title</th>
+        <th>Author</th>
+        <th>Grade</th>
+        <th>Edition</th>
+        <th>Make a request</th>
+      </tr>
+      {% for available in books_available %}
+      <tr class="heading-section" style="color:#FFFFFF">
+        <td>{{available.title}}</td>
+        <td>{{available.author}}</td>
+        <td>{{available.grade}}</td>
+        <td>{{available.edition}}</td>
+        <td>
+          <a href="{% url 'request_book' user_id=id isbn=available.isbn%}">
+            <button type="submit" class="form-control btn btn-primary submit px-3">Request
+            </button>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
+          <h2 class="heading-section"><u>Request for a Stationery</u></h2>
+          <h2 class="heading-section" style="color:#FFB6C1;">Go ahead and enter a category to view the available items!</h2>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="login-wrap p-0">
+            <form action="{% url 'transaction' user_id=id%}" method="POST" class="signin-form">
+              {% csrf_token %}
+              <div class="form-group">
+                <select type="text" name="category" class="form-control" placeholder="Subject" required>
+                    <option>{{category}}</option>
+                    <option>Pencil</option>  
+                    <option>Eraser</option>  
+                    <option>School Bag</option>
+                    <option>Pen</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="form-control btn btn-primary submit px-3">Check Items!</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {% if category != 'Select a Category'%}
+      <table style="width:100%">
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <th>Category</th>
+        <th>Quantity</th>
+        <th>Make a request</th>
+      </tr>
+      {% for available in stationery_available %}
+      <tr class="heading-section" style="color:#FFFFFF">
+        <td>{{available.name}}</td>
+        <td>{{available.quantity}}</td>
+        <td>
+          <a href="{% url 'request_stationery' user_id=id stationery_id=available.stationery_id%}">
+            <button type="submit" class="form-control btn btn-primary submit px-3">Request 1 {{available.name}}
+            </button>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+
     </div>
   </section>
   </body>

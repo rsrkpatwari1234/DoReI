@@ -22,8 +22,18 @@ def insert_using_raw_sql(sql):
         print(e)
         return False
 
-def select_using_raw_sql(sql):
+def update_using_raw_sql(sql):
     print('sql - ', sql)
+    cursor = connection.cursor()
+    try:
+        cursor.execute(sql)
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+def select_using_raw_sql(sql):
+    #print('sql - ', sql)
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
@@ -31,7 +41,7 @@ def select_using_raw_sql(sql):
         print(e)
         return []
     results = cursor.fetchall()
-    #print(results)
+    ##print(results)
     l = []
     for  i in range(len(results)):
         dict = {}
@@ -69,8 +79,8 @@ def signUp(request):
 
     if request.method == "POST":
         results = select_using_raw_sql("SELECT * FROM dorei_user")
-        #print(results)
-        print("Working.....")
+        ##print(results)
+        #print("Working.....")
         count = 0
         for user in results:
             if user['email_address'] == request.POST.get("email"):
@@ -106,7 +116,7 @@ def signUp(request):
         if len(LastName) == 0:
             LastName = 'NULL'
 
-        #print(type(UserId),type(FirstName),type(Email),type(HouseNo),type(StreetName),type(City),type(PostalCode),type(Password))
+        ##print(type(UserId),type(FirstName),type(Email),type(HouseNo),type(StreetName),type(City),type(PostalCode),type(Password))
 
         i = "dorei_user(user_id,postal_code,first_name,middle_name,last_name,email_address,house_number,street_number,street_name,city,state,password)"
         j = "values("+str(UserId)+","+str(PostalCode)+",'"+str(FirstName)+"',"+str(MiddleName)+","+str(LastName)+",'"+str(Email)+"',"+str(HouseNo)+","+str(StreetNo)+",'"+str(StreetName)+"','"+str(City)+"','"+str(State)+"','"+str(Password)+"')"
@@ -152,11 +162,53 @@ def transaction(request, user_id):
      FROM dorei_stationerydonate AS dsd, dorei_stationery AS ds, dorei_user AS du\
      WHERE dsd.is_collected=1 AND du.user_id=dsd.user_id AND ds.stationery_id=dsd.stationery_id ORDER BY dsd.t_time DESC LIMIT 5")
     
-    results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
-    print(json.dumps(results,indent=4))
+    # results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
+    # #print(json.dumps(results,indent=4))
 
-    results = select_using_raw_sql("SELECT * FROM dorei_stationery")
-    print(json.dumps(results,indent=4))
+    # results = select_using_raw_sql("SELECT * FROM dorei_stationery")
+    # #print(json.dumps(results,indent=4))
+
+    m_donations = select_using_raw_sql("SELECT dm.amount as amount,date(dm.t_time) as t_time FROM dorei_money AS dm WHERE dm.user_id="+str(user_id))
+    
+    br_donations = select_using_raw_sql("SELECT UPPER(db.title) as title,db.subject as subject,db.author as author,date(dbd.t_time) as t_time FROM dorei_bookdonate AS dbd,dorei_book as db\
+     WHERE dbd.user_id="+str(user_id)+" AND db.isbn=dbd.isbn AND dbd.is_collected=1")
+    bnr_donations = select_using_raw_sql("SELECT UPPER(db.title) as title,db.subject as subject,db.author as author,date(dbd.t_time) as t_time FROM dorei_bookdonate AS dbd,dorei_book as db\
+     WHERE dbd.user_id="+str(user_id)+" AND db.isbn=dbd.isbn AND dbd.is_collected<>1")
+
+    sr_donations = select_using_raw_sql("SELECT ds.stationery_name as name,dsd.quantity as quantity,date(dsd.t_time) as t_time FROM dorei_stationerydonate AS dsd,dorei_stationery as ds\
+     WHERE dsd.user_id="+str(user_id)+" AND ds.stationery_id=dsd.stationery_id AND dsd.is_collected=1")
+    snr_donations = select_using_raw_sql("SELECT ds.stationery_name as name,dsd.quantity as quantity,date(dsd.t_time) as t_time FROM dorei_stationerydonate AS dsd,dorei_stationery as ds\
+     WHERE dsd.user_id="+str(user_id)+" AND ds.stationery_id=dsd.stationery_id AND dsd.is_collected<>1")
+
+    # results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
+    # #print(json.dumps(snr_donations,indent=4))
+    # #print(json.dumps(results,indent=4))
+    # #print(json.dumps(bnr_donations,indent=4))
+
+    books_available = []
+    subject = 'Select a Subject'
+    stationery_available = []
+    category = 'Select a Category'
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        #print(subject)
+        if subject != 'Select a Subject':
+            books_available = select_using_raw_sql("SELECT db.isbn as isbn, UPPER(db.title) as title,UPPER(db.author) as author,db.grade as grade,db.edition as edition \
+            FROM dorei_bookdonate AS dbd,dorei_book as db\
+            WHERE  db.isbn=dbd.isbn AND dbd.is_collected=1 AND db.subject='"+str(subject)+"' AND \
+            dbd.isbn NOT IN(SELECT dbr.isbn FROM dorei_bookrequest AS dbr)") 
+            # results = select_using_raw_sql("SELECT * FROM dorei_book")
+            # #print(json.dumps(results,indent=4))
+
+        category = request.POST.get("category")
+        print(category)
+        if category != 'Select a Category':
+            stationery_available = select_using_raw_sql("SELECT ds.stationery_id as stationery_id,ds.stationery_name as name,ds.tot_quantity as quantity \
+            FROM dorei_stationery AS ds\
+            WHERE  ds.stationery_name='"+str(category)+"' AND ds.tot_quantity>0") 
+            results = select_using_raw_sql("SELECT * FROM dorei_stationery")
+            print(json.dumps(results,indent=4))
 
     data = {
             'id':user_id,
@@ -167,6 +219,15 @@ def transaction(request, user_id):
             'stationery_donors':stationery_donors[0]['SUM(ds.user_id)'],
             'recent_book_donation':recent_book_donation,
             'recent_stationery_donation':recent_stationery_donation,
+            'm_donations':m_donations,
+            'br_donations':br_donations,
+            'bnr_donations':bnr_donations,
+            'sr_donations':sr_donations,
+            'snr_donations':snr_donations,
+            'books_available':books_available,
+            'subject':subject,
+            'stationery_available':stationery_available,
+            'category':category,
         }
     return render(request, 'user_ui.html', data)
 
@@ -185,7 +246,7 @@ def donate_money(request, user_id):
         command = "INSERT INTO " + i +" "+ j
         if insert_using_raw_sql(command):
             results = select_using_raw_sql("SELECT * FROM dorei_money")
-            print(json.dumps(results,indent=4))
+            #print(json.dumps(results,indent=4))
             messages.success(request, 'Thank you for donating money.')
             return redirect(reverse('transaction', kwargs={"user_id":user_id}))
         else:
@@ -218,10 +279,10 @@ def donate_book(request, user_id):
 
         if insert_using_raw_sql(command1) and insert_using_raw_sql(command2):
             results = select_using_raw_sql("SELECT * FROM dorei_book")
-            print(json.dumps(results,indent=4))
+            #print(json.dumps(results,indent=4))
 
             results = select_using_raw_sql("SELECT * FROM dorei_bookdonate")
-            print(json.dumps(results,indent=4))
+            #print(json.dumps(results,indent=4))
 
             messages.success(request, 'Thank you for donating Book(s).')
             return redirect(reverse('transaction', kwargs={"user_id":user_id}))
@@ -231,14 +292,19 @@ def donate_book(request, user_id):
 
 def donate_stationery(request, user_id):
     if request.method == "POST":
-        StationeryId = Stationery.objects.all().count() + 1
+        # StationeryId = Stationery.objects.all().count() + 1
         StationeryName = request.POST.get("stationery_name")
         Quantity = request.POST.get("tot_quantity")
 
-        i = "dorei_stationery(stationery_id, stationery_name, tot_quantity)"
-        j = "values("+str(StationeryId)+",'"+str(StationeryName)+"',"+str(Quantity)+")"
+        results = select_using_raw_sql("SELECT ds.stationery_id FROM dorei_stationery AS ds WHERE ds.stationery_name='"+str(StationeryName)+"'")
         
-        command1 = "INSERT INTO " + i +" "+ j
+        if len(results) == 0:
+            command = "INSERT INTO dorei_stationery(stationery_name,tot_quantity) VALUES('"+str(StationeryName)+"',0)"
+            insert_using_raw_sql(command)
+            results = select_using_raw_sql("SELECT ds.stationery_id FROM dorei_stationery AS ds WHERE ds.stationery_name='"+str(StationeryName)+"'")     
+        
+        a(json.dumps(results,indent=4))
+        StationeryId = results[0]['stationery_id']
 
         UserId = user_id
         Time =  datetime.now()
@@ -246,14 +312,11 @@ def donate_stationery(request, user_id):
         i = "dorei_stationerydonate(user_id, stationery_id, t_time, quantity, is_collected)"
         j = "values("+str(UserId)+","+str(StationeryId)+",'"+str(Time)+"',"+str(Quantity)+",'False')"
         
-        command2 = "INSERT INTO " + i +" "+ j
+        command = "INSERT INTO " + i +" "+ j
 
-        if insert_using_raw_sql(command1) and insert_using_raw_sql(command2):
-            results = select_using_raw_sql("SELECT * FROM dorei_stationery")
-            print(json.dumps(results,indent=4))
-
+        if insert_using_raw_sql(command):
             results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
-            print(json.dumps(results,indent=4))
+            #print(json.dumps(results,indent=4))
 
             messages.success(request, 'Thank you for donating Item(s).')
             return redirect(reverse('transaction', kwargs={"user_id":user_id}))
@@ -261,5 +324,37 @@ def donate_stationery(request, user_id):
             messages.error(request, 'Internal error! Try again.')
     return render(request, 'donate_stationery.html', {'user_id':user_id})
 
-def request(request):
-    return render(request, 'request.html')
+def request_book(request, user_id, isbn):
+
+    #print('++++++++++++++++++++++++HUA+++++++++++++++++++++++++++++')
+    Time =  datetime.now()
+    command = "INSERT INTO dorei_bookrequest(isbn, user_id, t_time, is_delivered) \
+    values('"+str(isbn)+"',"+str(user_id)+",'"+str(Time)+"','False')"
+
+    if insert_using_raw_sql(command):
+        results = select_using_raw_sql("SELECT * FROM dorei_bookrequest")
+        #print(json.dumps(results,indent=4))
+        messages.success(request, 'Thank you for the Book request.')
+    else:
+        messages.error(request, 'Internal error! Try again.')
+    return redirect(reverse('transaction', kwargs={"user_id":user_id}))
+
+def request_stationery(request, user_id, stationery_id):
+
+    print('++++++++++++++++++++++++HUA+++++++++++++++++++++++++++++')
+    Time =  datetime.now()
+    command1 = "INSERT INTO dorei_stationeryrequest(stationery_id, user_id, t_time, quantity, is_delivered) \
+    values("+str(stationery_id)+","+str(user_id)+",'"+str(Time)+"',1,'False')"
+
+    command2 = "UPDATE dorei_stationery SET tot_quantity=tot_quantity-1 WHERE stationery_id="+str(stationery_id)
+
+    if insert_using_raw_sql(command1) and update_using_raw_sql(command2):
+        results = select_using_raw_sql("SELECT * FROM dorei_stationery")
+        print(json.dumps(results,indent=4))
+
+        results = select_using_raw_sql("SELECT * FROM dorei_stationeryrequest")
+        print(json.dumps(results,indent=4))
+        messages.success(request, 'Thank you for the Stationery request.')
+    else:
+        messages.error(request, 'Internal error! Try again.')
+    return redirect(reverse('transaction', kwargs={"user_id":user_id}))
