@@ -27,8 +27,8 @@ def select_using_raw_sql(sql):
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
-    except:
-        print('error in sql')
+    except Exception as e:
+        print(e)
         return []
     results = cursor.fetchall()
     #print(results)
@@ -138,15 +138,26 @@ def signOut(request):
 def transaction(request, user_id):
 
     total_charity = select_using_raw_sql("SELECT SUM(dm.amount) FROM dorei_money AS dm")
+    
     books_donated = select_using_raw_sql("SELECT COUNT(db.isbn) FROM dorei_bookdonate AS db WHERE db.is_collected=1")
     stationery_donated = select_using_raw_sql("SELECT SUM(ds.quantity) FROM dorei_stationerydonate AS ds WHERE ds.is_collected=1")
+    
     book_donors = select_using_raw_sql("SELECT COUNT(DISTINCT(db.user_id)) FROM dorei_bookdonate AS db WHERE db.is_collected=1")
     stationery_donors = select_using_raw_sql("SELECT SUM(ds.user_id) FROM dorei_stationerydonate AS ds WHERE ds.is_collected=1")
-    recent_book_donation = select_using_raw_sql("SELECT UPPER(du.first_name) AS name,UPPER(db.title) AS title,dbd.t_time AS t_time FROM dorei_bookdonate AS dbd, dorei_book AS db, dorei_user AS du\
-     WHERE dbd.is_collected=1 AND du.user_id=dbd.user_id AND db.isbn=dbd.isbn ORDER BY dbd.t_time DESC LIMIT 5")
-    recent_stationery_donation = select_using_raw_sql("SELECT UPPER(du.first_name) AS name,UPPER(ds.stationery_name) AS category,ds.tot_quantity AS quantity,dsd.t_time AS t_time FROM dorei_stationerydonate AS dsd, dorei_stationery AS ds, dorei_user AS du\
-     WHERE dsd.is_collected=1 AND du.user_id=dsd.user_id AND ds.staionery_id=dsd.stationery_id ORDER BY dsd.t_time DESC LIMIT 5")
     
+    recent_book_donation = select_using_raw_sql("SELECT UPPER(du.first_name) AS name,UPPER(db.title) AS title,dbd.t_time AS t_time\
+     FROM dorei_bookdonate AS dbd, dorei_book AS db, dorei_user AS du\
+     WHERE dbd.is_collected=1 AND du.user_id=dbd.user_id AND db.isbn=dbd.isbn ORDER BY dbd.t_time DESC LIMIT 5")
+    recent_stationery_donation = select_using_raw_sql("SELECT UPPER(du.first_name) AS name,UPPER(ds.stationery_name) AS category,dsd.quantity AS quantity,dsd.t_time AS t_time\
+     FROM dorei_stationerydonate AS dsd, dorei_stationery AS ds, dorei_user AS du\
+     WHERE dsd.is_collected=1 AND du.user_id=dsd.user_id AND ds.stationery_id=dsd.stationery_id ORDER BY dsd.t_time DESC LIMIT 5")
+    
+    results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
+    print(json.dumps(results,indent=4))
+
+    results = select_using_raw_sql("SELECT * FROM dorei_stationery")
+    print(json.dumps(results,indent=4))
+
     data = {
             'id':user_id,
             'charity':total_charity[0]['SUM(dm.amount)'],
