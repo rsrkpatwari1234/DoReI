@@ -23,6 +23,60 @@
             <a href="/dorei/signOut/"><button type="submit" class="form-control btn btn-primary submit px-3">Sign Out</button></a>
           </div>
       </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Total Charity : {{charity}}</h2>
+          <h2 class="heading-section">Total No. of Books Donated Till Now : {{books_donated}}</h2>
+          <h2 class="heading-section">Total No. of Book Donors : {{book_donors}}</h2>
+          <h2 class="heading-section">Total No. of Stationery items Donated Till Now : {{stationery_donated}}</h2>
+          <h2 class="heading-section">Total No. of Stationery Donors : {{stationery_donors}}</h2>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+          <div class="col-md-6 text-center mb-5">
+            <h2 class="heading-section"><u>Recent Book Donations</u></h2>
+          </div>
+      </div>
+
+      <table style="width:100%">
+        <tr class="heading-section" style="color:#FFB6C1;">
+          <th>User Name</th>
+          <th>Book Title</th>
+          <th>Time of Donation</th>
+        </tr>
+        {% for donation in recent_book_donation %}
+        <tr class="heading-section" style="color:#FFFFFF">
+          <td >{{donation.name}}</td>
+          <td >{{donation.title}}</td>
+          <td >{{donation.t_time}}</td>
+        </tr>
+        {% endfor %}
+      </table> 
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section"><u>Recent Stationery Donations</u></h2>
+        </div>
+    </div>
+
+    <table style="width:100%">
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <th>User Name</th>
+        <th>Stationery category</th>
+        <th>Quantity</th>
+        <th>Time of Donation</th>
+      </tr>
+      {% for donation in recent_stationery_donation %}
+      <tr class="heading-section" style="color:#FFFFFF">
+        <td>{{donation.name}}</td>
+        <td>{{donation.category}}</td>
+        <td>{{donation.quantity}}</td>
+        <td>{{donation.t_time}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
     </div>
   </section>
   </body>
