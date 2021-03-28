@@ -1,9 +1,10 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse # Used to generate URLs by reversing the URL patterns
+from django.core.validators import RegexValidator
 
 class Location(models.Model):
-    location_id = models.IntegerField(db_column='location_id', primary_key=True)
+    location_id = models.AutoField(db_column='location_id', primary_key=True)
     floor = models.IntegerField(db_column='floor',default=1)
     room = models.CharField(db_column='room', max_length=5, default=1)               #can change to IntegerField
     shelf = models.IntegerField(db_column='shelf',default=1)
@@ -24,7 +25,7 @@ class Book(models.Model):
         return self.isbn
 
 class User(models.Model):
-    user_id = models.IntegerField(db_column='user_id', primary_key=True)  
+    user_id = models.AutoField(db_column='user_id', primary_key=True)  
     first_name = models.TextField(db_column='first_name', max_length=10)
     middle_name = models.TextField(db_column='middle_name', max_length=10, blank=True, null=True)
     last_name = models.TextField(db_column='last_name', max_length=10, blank=True, null=True)
@@ -101,7 +102,20 @@ class Money(models.Model):
 
 class PhoneNumber(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column='user_id')
-    phone_number = models.DecimalField(db_column='phone_number', primary_key=True, max_digits=10, decimal_places=0)
+    phone_number = models.IntegerField(db_column='phone_number', primary_key=True)
 
     class Meta:
         unique_together = (('user_id', 'phone_number'),)
+
+class Manager(models.Model):
+    manager_id = models.AutoField(db_column='manager_id', primary_key=True)
+    first_name = models.TextField(db_column='first_name', max_length=10)
+    middle_name = models.TextField(db_column='middle_name', max_length=10, blank=True, null=True)
+    last_name = models.TextField(db_column='last_name', max_length=10, blank=True, null=True)
+    email_address = models.EmailField(db_column='email_address', max_length=40)
+    phone_number = models.IntegerField(db_column='phone_number')
+    password = models.CharField(db_column='password', max_length=256)
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.email_address

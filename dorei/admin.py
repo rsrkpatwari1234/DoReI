@@ -11,4 +11,6 @@ admin.site.register(Stationery)
 admin.site.register(BookRequest)
 admin.site.register(StationeryDonate)
 admin.site.register(StationeryRequest)
+admin.site.register(PhoneNumber)
+admin.site.register(Manager)
 

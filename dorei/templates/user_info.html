@@ -99,7 +99,7 @@
         <td>On {{request.t_time}}, you requested a book with title '{{request.title}}' of '{{request.author}}' on {{request.subject}} which is approved</td>
       </tr>
       {% endfor %}
-      {% for request in b_requests %}
+      {% for request in bp_requests %}
       <tr class="heading-section" style="color:#FFB6C1;">
         <td>On {{request.t_time}}, you requested a book with title '{{request.title}}' of '{{request.author}}' on {{request.subject}} which is not approved yet</td>
       </tr>
