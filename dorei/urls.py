@@ -12,6 +12,7 @@ urlpatterns = [
     path('donate_stationery/<int:user_id>/', views.donate_stationery, name='donate_stationery'),
     path('request_book/<int:user_id>/<str:isbn>/', views.request_book, name='request_book'),
     path('request_stationery/<int:user_id>/<str:stationery_id>/', views.request_stationery, name='request_stationery'),
+    path('user_info/<int:user_id>/', views.user_info, name='user_info'),
     # path('manage/', views.manage, name='manage'),
     path('signOut/', views.signOut, name='signOut'),
 ]

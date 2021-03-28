@@ -98,3 +98,10 @@ class Money(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return str(self.money_id)
+
+class PhoneNumber(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column='user_id')
+    phone_number = models.DecimalField(db_column='phone_number', primary_key=True, max_digits=10, decimal_places=0)
+
+    class Meta:
+        unique_together = (('user_id', 'phone_number'),)

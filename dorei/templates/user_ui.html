@@ -20,6 +20,9 @@
             <a href="{% url 'donate_money' user_id=id%}"><button type="submit" class="form-control btn btn-primary submit px-3">Donate Money</button></a>
           </div>
           <div class="col form-group">
+            <a href="{% url 'user_info' user_id=id%}"><button type="submit" class="form-control btn btn-primary submit px-3">My Info</button></a>
+          </div>
+          <div class="col form-group">
             <a href="/dorei/signOut/"><button type="submit" class="form-control btn btn-primary submit px-3">Sign Out</button></a>
           </div>
       </div>
@@ -58,65 +61,6 @@
         <div class="col-md-6 text-center mb-5">
           <br></br>
           <h2 class="heading-section"><u>Recent Stationery Donations</u></h2>
-        </div>
-    </div>
-
-    <table style="width:100%">
-      <tr class="heading-section" style="color:#FFB6C1;">
-        <th>User Name</th>
-        <th>Stationery category</th>
-        <th>Quantity</th>
-        <th>Date & Time of Donation</th>
-      </tr>
-      {% for donation in recent_stationery_donation %}
-      <tr class="heading-section" style="color:#FFFFFF">
-        <td>{{donation.name}}</td>
-        <td>{{donation.category}}</td>
-        <td>{{donation.quantity}}</td>
-        <td>{{donation.t_time}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>My Donations</u></h2>
-        </div>
-    </div>
-
-    <table style="width:100%">
-      {% for donation in m_donations %}
-      <tr class="heading-section" style="color:#FFB6C1;">
-        <td>On {{donation.t_time}}, you donated Rs.{{donation.amount}}</td>
-      </tr>
-      {% endfor %}
-      {% for donation in br_donations %}
-      <tr class="heading-section" style="color:#FFB6C1;">
-        <td>On {{donation.t_time}}, you successfully donated a book with title '{{donation.title}}' of '{{donation.author}}' on {{donation.subject}} </td>
-      </tr>
-      {% endfor %}
-      {% for donation in bnr_donations %}
-      <tr class="heading-section" style="color:#FFB6C1;">
-        <td>On {{donation.t_time}}, you claimed to donate book with title '{{donation.title}}' of '{{donation.author}}' on {{donation.subject}} but haven't donated yet :(</td>
-      </tr>
-      {% endfor %}
-      {% for donation in sr_donations %}
-      <tr class="heading-section" style="color:#FFB6C1;">
-        <td>On {{donation.t_time}}, you donated {{donation.quantity}} {{donation.name}}</td>
-      </tr>
-      {% endfor %}
-      {% for donation in snr_donations %}
-      <tr class="heading-section" style="color:#FFB6C1;">
-        <td>On {{donation.t_time}}, you claimed to donate {{donation.quantity}} {{donation.name}} but haven't donated yet :(</td>
-      </tr>
-      {% endfor %}
-    </table>
-
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>My Requests</u></h2>
         </div>
     </div>
 

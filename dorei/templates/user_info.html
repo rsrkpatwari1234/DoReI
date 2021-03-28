@@ -1,0 +1,123 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <body class="img js-fullheight" style="background-color: #928DAB;">
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Your user id : {{id}}</h2>
+        </div>
+      </div>
+
+    <div class="row justify-content-center">
+        <div class="col form-group">
+          <a href="{% url 'transaction' user_id=id%}"><button type="submit" class="form-control btn btn-primary submit px-3">Back to transactions</button></a>
+        </div>
+        <div class="col form-group">
+          <a href="/dorei/signOut/"><button type="submit" class="form-control btn btn-primary submit px-3">Sign Out</button></a>
+          <br></br>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="login-wrap p-0">
+          <form action="{% url 'user_info' user_id=id%}" method="POST" class="signin-form">
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" name="phone_number" class="form-control" placeholder="Give a Phone No.">
+            </div>
+            <div class="form-group">
+              <button type="submit" class="form-control btn btn-primary submit px-3">Add this phone number!</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
+          <h2 class="heading-section"><u>My Phone numbers</u></h2>
+        </div>
+    </div>
+
+    <table style="width:100%">
+      {% for number in phone_number %}
+      <tr class="heading-section" style="color:#FFFFFF">
+        <td>{{number.phone_number}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
+          <h2 class="heading-section"><u>My Donations</u></h2>
+        </div>
+    </div>
+
+    <table style="width:100%">
+      {% for donation in m_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you donated Rs.{{donation.amount}}</td>
+      </tr>
+      {% endfor %}
+      {% for donation in br_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you successfully donated a book with title '{{donation.title}}' of '{{donation.author}}' on {{donation.subject}} </td>
+      </tr>
+      {% endfor %}
+      {% for donation in bnr_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you claimed to donate book with title '{{donation.title}}' of '{{donation.author}}' on {{donation.subject}} but haven't donated yet :(</td>
+      </tr>
+      {% endfor %}
+      {% for donation in sr_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you donated {{donation.quantity}} {{donation.name}}</td>
+      </tr>
+      {% endfor %}
+      {% for donation in snr_donations %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{donation.t_time}}, you claimed to donate {{donation.quantity}} {{donation.name}} but haven't donated yet :(</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
+          <h2 class="heading-section"><u>My Requests</u></h2>
+        </div>
+    </div>
+
+    <table style="width:100%">
+      {% for request in b_requests %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{request.t_time}}, you requested a book with title '{{request.title}}' of '{{request.author}}' on {{request.subject}} which is approved</td>
+      </tr>
+      {% endfor %}
+      {% for request in b_requests %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{request.t_time}}, you requested a book with title '{{request.title}}' of '{{request.author}}' on {{request.subject}} which is not approved yet</td>
+      </tr>
+      {% endfor %}
+      {% for request in s_requests %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{request.t_time}}, you requested {{request.quantity}} {{request.name}} which is approved</td>
+      </tr>
+      {% endfor %}
+      {% for request in sp_requests %}
+      <tr class="heading-section" style="color:#FFB6C1;">
+        <td>On {{request.t_time}}, you requested {{request.quantity}} {{request.name}} which is not approved yet</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    </div>
+  </section>
+  </body>
+
+{% endblock %}
