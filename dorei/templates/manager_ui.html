@@ -76,6 +76,34 @@
       <div class="row justify-content-center">
         <div class="col-md-6 text-center mb-5">
           <br></br>
+          <h2 class="heading-section"><u>Book Locations</u></h2>
+        </div>
+      </div>
+
+      {% if book_location %}
+      <table style="width:100%">
+        <tr class="heading-section" style="color:#FFB6C1;">
+          <th>Isbn</th>
+          <th>Title</th>
+          <th>Floor</th>
+          <th>Room</th>
+          <th>Shelf</th>
+        </tr>
+        {% for donation in book_location %}
+        <tr class="heading-section" style="color:#FFFFFF">
+          <td>{{donation.isbn}}</td>
+          <td>{{donation.title}}</td>
+          <td>{{donation.floor}}</td>
+          <td>{{donation.room}}</td>
+          <td>{{donation.shelf}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <br></br>
           <h2 class="heading-section"><u>Book Donations</u></h2>
         </div>
       </div>

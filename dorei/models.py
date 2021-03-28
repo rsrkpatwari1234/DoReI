@@ -6,7 +6,7 @@ from django.core.validators import RegexValidator
 class Location(models.Model):
     location_id = models.AutoField(db_column='location_id', primary_key=True)
     floor = models.IntegerField(db_column='floor',default=1)
-    room = models.CharField(db_column='room', max_length=5, default=1)               #can change to IntegerField
+    room = models.IntegerField(db_column='room', default=1)               #can change to IntegerField
     shelf = models.IntegerField(db_column='shelf',default=1)
 
     def __str__(self):

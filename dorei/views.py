@@ -13,7 +13,7 @@ from django.urls import reverse
 import json
 
 def insert_using_raw_sql(sql):
-    #print('sql - ', sql)
+    print('sql - ', sql)
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
@@ -23,7 +23,7 @@ def insert_using_raw_sql(sql):
         return False
 
 def update_using_raw_sql(sql):
-    #print('sql - ', sql)
+    print('sql - ', sql)
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
@@ -33,7 +33,7 @@ def update_using_raw_sql(sql):
         return False
 
 def select_using_raw_sql(sql):
-    #print('sql - ', sql)
+    print('sql - ', sql)
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
@@ -423,6 +423,9 @@ def manage(request):
         du.house_number AS house_number,du.street_number AS street_number,du.street_name AS street_name,du.city AS city,du.state AS state,du.postal_code AS postal_code\
         FROM dorei_user AS du")
 
+    book_location = select_using_raw_sql("SELECT db.isbn AS isbn,UPPER(db.title) AS title,dl.floor AS floor,dl.room AS room,dl.shelf AS shelf \
+     FROM dorei_book AS db, dorei_location AS dl WHERE db.location_id IS NOT NULL AND dl.location_id=db.location_id")
+
     book_donations = select_using_raw_sql("SELECT dbd.user_id AS user_id,date(dbd.t_time) AS t_time,dbd.isbn AS isbn,db.title AS title,db.subject AS subject,dbd.is_collected AS verify\
      FROM dorei_bookdonate AS dbd, dorei_book AS db WHERE db.isbn=dbd.isbn")
 
@@ -449,6 +452,7 @@ def manage(request):
             'stationery_donors':stationery_donors[0]['COUNT(DISTINCT(ds.user_id))'],
             'charity_details':charity_details,
             'user_details':user_details,
+            'book_location':book_location,
             'book_donations':book_donations,
             'book_requests':book_requests,
             'available_stationery':available_stationery,
@@ -463,8 +467,11 @@ def isdonated_book(request,user_id,isbn):
     update_using_raw_sql(command)
     # results = select_using_raw_sql("SELECT * FROM dorei_bookdonate")
     # print(json.dumps(results,indent=4))
-
-    return redirect(reverse('manage'))
+    data = {
+        'isbn':isbn,
+    }
+    return render(request, 'locate_book.html', data)
+    #return redirect(reverse('manage'))
 
 def isrequested_book(request,user_id,isbn):
     command = "UPDATE dorei_bookrequest SET is_delivered=1 WHERE user_id="+str(user_id)+" AND isbn='"+str(isbn)+"'"
@@ -499,4 +506,23 @@ def isrequested_stationery(request,user_id,t_time):
     # results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
     # print(json.dumps(results,indent=4))
 
+    return redirect(reverse('manage'))
+
+def locate_book(request):
+
+    if request.method == "POST":
+        isbn = request.POST.get("isbn")
+        floor = request.POST.get("floor")
+        room = request.POST.get("room")
+        shelf = request.POST.get("shelf")
+
+        result = select_using_raw_sql("SELECT * FROM dorei_location AS dl WHERE dl.floor="+str(floor)+" AND dl.room="+str(room)+" AND dl.shelf="+str(shelf))
+
+        if len(result) == 0:
+            command = "INSERT INTO dorei_location(floor,room,shelf) VALUES("+str(floor)+","+str(room)+","+str(shelf)+")"
+            if insert_using_raw_sql(command):
+                result = select_using_raw_sql("SELECT location_id FROM dorei_location AS dl WHERE dl.floor="+str(floor)+" AND dl.room="+str(room)+" AND dl.shelf="+str(shelf))
+                update_using_raw_sql("UPDATE dorei_book SET location_id="+str(result[0]['location_id'])+" WHERE isbn='"+str(isbn)+"'")
+        else:
+            return render(request, 'locate_book.html', {'isbn':isbn})
     return redirect(reverse('manage'))

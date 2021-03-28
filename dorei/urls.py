@@ -20,5 +20,6 @@ urlpatterns = [
     #path('isrequested_stationery/<int:user_id>/<slug:t_time>/', views.isrequested_stationery, name='isrequested_stationery'),
     re_path(r'^isdonated_stationery/(?P<user_id>[0-9]+)/(?P<t_time>[-0-9_: .]+)/$', views.isdonated_stationery,name='isdonated_stationery'),
     re_path(r'^isrequested_stationery/(?P<user_id>[0-9]+)/(?P<t_time>[-0-9_:. ]+)/$', views.isrequested_stationery,name='isrequested_stationery'),
+    path('locate_book/', views.locate_book, name='locate_book'),
     path('signOut/', views.signOut, name='signOut'),
 ]

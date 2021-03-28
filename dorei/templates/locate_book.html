@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <body class="img js-fullheight" style="background-color: #928DAB;">
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Welcome Manager!</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="login-wrap p-0">
+            <h3 class="mb-4 text-center">Set the book location</h3>
+            <form action="/dorei/locate_book/" method="POST" class="signin-form">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="text" name="isbn" class="form-control" value="{{isbn}}" readonly>
+              </div>
+              <div class="form-group">
+                <input type="number" name="floor" class="form-control" min="1" max="20" placeholder="Floor Number" required>
+              </div>
+              <div class="form-group">
+                <input type="number" name="room" class="form-control" min="1" max="20" placeholder="Room Number" required>
+              </div>
+              <div class="form-group">
+                <input type="number" name="shelf" class="form-control" min="1" max="20" placeholder="Shelf Number" required>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="form-control btn btn-primary submit px-3">Sign In</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </body>
+
+{% endblock %}
