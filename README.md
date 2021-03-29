@@ -52,6 +52,7 @@ python3 manage.py runserver
 ```
 5.Follow the URL dispalyed and you will be directed to the website
 
-## Organisation : This project is created as a part of the Database and Management Course [CS43002] of IIT Kharagpur
+## Organisation 
+This project is created as a part of the Database and Management Course [CS43002] of IIT Kharagpur
  
 
