@@ -8,7 +8,11 @@ Demo of the application can be found at the youtube link :
 
 ## Prerequisites :
 - [Django](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction)
-- Front end development tools
+- Sqlite3 database
+- Html
+- Css
+- Js
+- Bootstrap
 
 ## Testing :
 - Used virtual python environment on a linux machine
