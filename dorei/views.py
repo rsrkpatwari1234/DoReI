@@ -521,7 +521,7 @@ def locate_book(request):
             if insert_using_raw_sql(command):
                 result = select_using_raw_sql("SELECT location_id FROM dorei_location AS dl WHERE dl.floor="+str(floor)+" AND dl.room="+str(room)+" AND dl.shelf="+str(shelf))
                 update_using_raw_sql("UPDATE dorei_book SET location_id="+str(result[0]['location_id'])+" WHERE isbn='"+str(isbn)+"'")
-                message = "Book donation successfully approved! Location is updated as well :)"
+                message = "Book donation successfully approved! Location is updated as well"
         else:
             message = "Internal Error occured while approving request.Try Again!"
             return render(request, 'locate_book.html', {'isbn':isbn})
