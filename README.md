@@ -13,42 +13,42 @@ Demo of the application can be found at the youtube link :
 ## Setting Up virtual Python3 environment
 1.Follow the commands to create a environemnt "env" and activate it
 ```
-$sudo apt-get install python3.7-venv
-$python3.7 -m venv env
+sudo apt-get install python3.7-venv
+python3.7 -m venv env
 ```
 
 2.Activate the environment using the command below
 ```
-$source env/bin/activate
+source env/bin/activate
 ```
 3.Install the required libraries in the virtual environment
 ```
-$pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 4.To deactivate the environment,use
 ```
-$deactivate
+deactivate
 ```
 ## Setting up the project
 1.Please follow the above steps to set up the virtual environment if you haven't already
 
 2.Initialise the directory for git and clone the repository using the following command
 ```
-$git clone https://github.com/rsrkpatwari1234/DoReI.git
+git clone https://github.com/rsrkpatwari1234/DoReI.git
 ```
 3.Activate the virtual environment from wherever you have made it
 ```
-$ source env/bin/activate
+source env/bin/activate
 ```
 3.Follow the below commands to set up the database with the required tables [in the same directory where you did step 2]
 ```
-$cd DoReI
-$python3 manage.py makemigrations
-$python3 manage.py migrate
+cd DoReI
+python3 manage.py makemigrations
+python3 manage.py migrate
 ```
 4.Start the Django server using the below command
 ```
-$python3 manage.py runserver 
+python3 manage.py runserver 
 ```
 5.Follow the URL dispalyed and you will be directed to the website
 
