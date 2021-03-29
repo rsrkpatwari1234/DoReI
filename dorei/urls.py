@@ -1,6 +1,8 @@
 from django.urls import path, re_path
 from . import views
 
+# using the given urls to direct pages in the application
+
 urlpatterns = [
     path('', views.logIn_user, name='logIn_user'),
     path('signUp/', views.signUp, name='signUp'),
@@ -16,8 +18,6 @@ urlpatterns = [
     path('manage/', views.manage, name='manage'),
     path('isdonated_book/<int:user_id>/<str:isbn>/', views.isdonated_book, name='isdonated_book'),
     path('isrequested_book/<int:user_id>/<str:isbn>/', views.isrequested_book, name='isrequested_book'),
-    #path('isdonated_stationery/<int:user_id>/<slug:t_time>/', views.isdonated_stationery, name='isdonated_stationery'),
-    #path('isrequested_stationery/<int:user_id>/<slug:t_time>/', views.isrequested_stationery, name='isrequested_stationery'),
     re_path(r'^isdonated_stationery/(?P<user_id>[0-9]+)/(?P<t_time>[-0-9_: .]+)/$', views.isdonated_stationery,name='isdonated_stationery'),
     re_path(r'^isrequested_stationery/(?P<user_id>[0-9]+)/(?P<t_time>[-0-9_:. ]+)/$', views.isrequested_stationery,name='isrequested_stationery'),
     path('locate_book/', views.locate_book, name='locate_book'),

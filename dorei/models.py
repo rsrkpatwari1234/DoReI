@@ -3,6 +3,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse # Used to generate URLs by reversing the URL patterns
 from django.core.validators import RegexValidator
 
+# Table definitions 
+
 class Location(models.Model):
     location_id = models.AutoField(db_column='location_id', primary_key=True)
     floor = models.IntegerField(db_column='floor',default=1)

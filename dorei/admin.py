@@ -1,6 +1,7 @@
 from django.contrib import admin
 from dorei.models import *
 
+# tables that will be visible in Admin site
 
 admin.site.register(Location)
 admin.site.register(Book)

@@ -12,6 +12,7 @@ from django.urls import reverse
 
 import json
 
+# inserting using raw sql of django
 def insert_using_raw_sql(sql):
     print('sql - ', sql)
     cursor = connection.cursor()
@@ -22,6 +23,7 @@ def insert_using_raw_sql(sql):
         print(e)
         return False
 
+# updating using raw sql of django
 def update_using_raw_sql(sql):
     print('sql - ', sql)
     cursor = connection.cursor()
@@ -32,6 +34,7 @@ def update_using_raw_sql(sql):
         print(e)
         return False
 
+# select using raw sql of django
 def select_using_raw_sql(sql):
     print('sql - ', sql)
     cursor = connection.cursor()
@@ -55,7 +58,7 @@ def select_using_raw_sql(sql):
         l.append(dict)
     return l
 
-
+# alredy signed up user log in into the system
 def logIn_user(request):
 
     if request.method == "POST":
@@ -72,12 +75,11 @@ def logIn_user(request):
             
     return render(request, 'logInUser.html')
 
+# new user tries to sign up
 def signUp(request):
 
     if request.method == "POST":
         results = select_using_raw_sql("SELECT * FROM dorei_user")
-        ##print(results)
-        #print("Working.....")
         for user in results:
             if user['email_address'] == request.POST.get("email"):
                 messages.error(request, 'This email address has been taken!')
@@ -100,17 +102,6 @@ def signUp(request):
         PostalCode = request.POST.get("zipcode")
         Password = request.POST.get("password")
 
-        # if len(HouseNo) == 0:
-        #     HouseNo = 'None'
-        # if len(StreetNo) == 0:
-        #     StreetNo = 'None'
-        # if len(MiddleName) == 0:
-        #     MiddleName = 'None'
-        # if len(LastName) == 0:
-        #     LastName = 'None'
-
-        ##print(type(UserId),type(FirstName),type(Email),type(HouseNo),type(StreetName),type(City),type(PostalCode),type(Password))
-
         i = "dorei_user(postal_code,first_name,middle_name,last_name,email_address,house_number,street_number,street_name,city,state,password)"
         j = "values("+str(PostalCode)+",'"+str(FirstName)+"','"+str(MiddleName)+"','"+str(LastName)+"','"+str(Email)+"','"+str(HouseNo)+"','"+str(StreetNo)+"','"+str(StreetName)+"','"+str(City)+"','"+str(State)+"','"+str(Password)+"')"
         
@@ -122,11 +113,9 @@ def signUp(request):
             result = insert_using_raw_sql("INSERT INTO dorei_phonenumber(user_id, phone_number) VALUES("+str(result[0]['user_id'])+","+str(request.POST.get("phone_no"))+")")
             print(json.dumps(results,indent=4))
             messages.success(request, 'Your account has been created successfully!')
-            # return render(request, 'logInUser.html')
             return redirect('/dorei/logInUser/')
         else:
-            messages.error(request, 'Internal error! Try again.')
-            #return render(request, 'SignUp.html')  
+            messages.error(request, 'Internal error! Try again.') 
             return redirect('/dorei/signUp/')
 
         # user = User.objects.create(user_id=UserId, email_address=Email, first_name=FirstName, middle_name=MiddleName,
@@ -138,9 +127,11 @@ def signUp(request):
     else:
         return render(request, 'SignUp.html')
 
+# user or manager tries to sign out of the application
 def signOut(request):
     return redirect('/dorei/logInUser/')
 
+# transaction details and features available to the user of the application
 def transaction(request, user_id):
 
     total_charity = select_using_raw_sql("SELECT SUM(dm.amount) FROM dorei_money AS dm")
@@ -157,18 +148,6 @@ def transaction(request, user_id):
     recent_stationery_donation = select_using_raw_sql("SELECT UPPER(du.first_name) AS name,UPPER(ds.stationery_name) AS category,dsd.quantity AS quantity,dsd.t_time AS t_time\
      FROM dorei_stationerydonate AS dsd, dorei_stationery AS ds, dorei_user AS du\
      WHERE dsd.is_collected=1 AND du.user_id=dsd.user_id AND ds.stationery_id=dsd.stationery_id ORDER BY dsd.t_time DESC LIMIT 5")
-    
-    # results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
-    # #print(json.dumps(results,indent=4))
-
-    # results = select_using_raw_sql("SELECT * FROM dorei_stationery")
-    # #print(json.dumps(results,indent=4))
-
-    
-    # results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
-    # #print(json.dumps(snr_donations,indent=4))
-    # #print(json.dumps(results,indent=4))
-    # #print(json.dumps(bnr_donations,indent=4))
 
     books_available = []
     subject = 'Select a Subject'
@@ -177,14 +156,11 @@ def transaction(request, user_id):
 
     if request.method == "POST":
         subject = request.POST.get("subject")
-        #print(subject)
         if subject != 'Select a Subject':
             books_available = select_using_raw_sql("SELECT db.isbn as isbn, UPPER(db.title) as title,UPPER(db.author) as author,db.grade as grade,db.edition as edition \
             FROM dorei_bookdonate AS dbd,dorei_book as db\
             WHERE  db.isbn=dbd.isbn AND dbd.is_collected=1 AND db.subject='"+str(subject)+"' AND \
             dbd.isbn NOT IN(SELECT dbr.isbn FROM dorei_bookrequest AS dbr)") 
-            # results = select_using_raw_sql("SELECT * FROM dorei_book")
-            # #print(json.dumps(results,indent=4))
 
         category = request.POST.get("category")
         print(category)
@@ -193,7 +169,6 @@ def transaction(request, user_id):
             FROM dorei_stationery AS ds\
             WHERE  ds.stationery_name='"+str(category)+"' AND ds.tot_quantity>0") 
             results = select_using_raw_sql("SELECT * FROM dorei_stationery")
-            #print(json.dumps(results,indent=4))
 
     data = {
             'id':user_id,
@@ -211,6 +186,7 @@ def transaction(request, user_id):
         }
     return render(request, 'user_ui.html', data)
 
+# a logged in user donates money for the organisation
 def donate_money(request, user_id):
 
     if request.method == "POST":
@@ -234,6 +210,7 @@ def donate_money(request, user_id):
         
     return render(request, 'donate_money.html', {'user_id':user_id})
 
+# a logged in user donates a book for the organisation
 def donate_book(request, user_id):
 
     if request.method == "POST":
@@ -270,9 +247,10 @@ def donate_book(request, user_id):
             messages.error(request, 'Internal error! Try again.')
     return render(request, 'donate_book.html', {'user_id':user_id})
 
+# a logged in user donates a stationery for the organisation
 def donate_stationery(request, user_id):
     if request.method == "POST":
-        # StationeryId = Stationery.objects.all().count() + 1
+
         StationeryName = request.POST.get("stationery_name")
         Quantity = request.POST.get("tot_quantity")
 
@@ -304,6 +282,7 @@ def donate_stationery(request, user_id):
             messages.error(request, 'Internal error! Try again.')
     return render(request, 'donate_stationery.html', {'user_id':user_id})
 
+#  logged in user requests for a particular book
 def request_book(request, user_id, isbn):
 
     Time =  datetime.now()
@@ -318,6 +297,7 @@ def request_book(request, user_id, isbn):
         messages.error(request, 'Internal error! Try again.')
     return redirect(reverse('transaction', kwargs={"user_id":user_id}))
 
+# logged in user requests for a particular stationery
 def request_stationery(request, user_id, stationery_id):
 
     Time =  datetime.now()
@@ -337,6 +317,7 @@ def request_stationery(request, user_id, stationery_id):
         messages.error(request, 'Internal error! Try again.')
     return redirect(reverse('transaction', kwargs={"user_id":user_id}))
 
+# transaction and phone number details of a particular user
 def user_info(request, user_id):
 
     m_donations = select_using_raw_sql("SELECT dm.amount as amount,date(dm.t_time) as t_time FROM dorei_money AS dm WHERE dm.user_id="+str(user_id))
@@ -392,6 +373,7 @@ def user_info(request, user_id):
 
     return render(request, 'user_info.html', data)
 
+# log in facility for the manager of the application
 def logIn_manager(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -400,14 +382,13 @@ def logIn_manager(request):
         if results:
             for user in results:
                 if user['password'] == request.POST.get("password"):
-                    #return render(request, 'user_ui.html', {'current_user':user['user_id']})
                     return redirect(reverse('manage'))
         else:
             messages.error(request, 'Email id or password does not match!')
             
     return render(request, 'logInManager.html')
 
-
+# Overall transactions and facilities available to the manager
 def manage(request):
 
     total_charity = select_using_raw_sql("SELECT SUM(dm.amount) FROM dorei_money AS dm")
@@ -462,6 +443,7 @@ def manage(request):
 
     return render(request, 'manager_ui.html', data)
 
+# manager can verify the donation of a book and can set its location
 def isdonated_book(request,user_id,isbn):
     command = "UPDATE dorei_bookdonate SET is_collected=1 WHERE user_id="+str(user_id)+" AND isbn='"+str(isbn)+"'"
     update_using_raw_sql(command)
@@ -471,18 +453,14 @@ def isdonated_book(request,user_id,isbn):
         'isbn':isbn,
     }
     return render(request, 'locate_book.html', data)
-    #return redirect(reverse('manage'))
 
+# manager can verify the request for a book by any user
 def isrequested_book(request,user_id,isbn):
     command = "UPDATE dorei_bookrequest SET is_delivered=1 WHERE user_id="+str(user_id)+" AND isbn='"+str(isbn)+"'"
-    #print(user_id,isbn)
-    #print(command)
     update_using_raw_sql(command)
-    # results = select_using_raw_sql("SELECT * FROM dorei_bookdonate")
-    # print(json.dumps(results,indent=4))
-
     return redirect(reverse('manage'))
 
+# manager can verify the donation of a stationery by any user
 def isdonated_stationery(request,user_id,t_time):
     command = "UPDATE dorei_stationerydonate SET is_collected=1 WHERE user_id="+str(user_id)+" AND t_time='"+str(t_time)+"'"
     update_using_raw_sql(command)
@@ -498,16 +476,15 @@ def isdonated_stationery(request,user_id,t_time):
 
     return redirect(reverse('manage'))
 
+# manager can verify the request for a stationery by any user
 def isrequested_stationery(request,user_id,t_time):
     command = "UPDATE dorei_stationeryrequest SET is_delivered=1 WHERE user_id="+str(user_id)+" AND t_time='"+str(t_time)+"'"
     #print(user_id,isbn)
     #print(command)
     update_using_raw_sql(command)
-    # results = select_using_raw_sql("SELECT * FROM dorei_stationerydonate")
-    # print(json.dumps(results,indent=4))
-
     return redirect(reverse('manage'))
 
+# manager sets the location for a book
 def locate_book(request):
 
     if request.method == "POST":
