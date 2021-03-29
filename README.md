@@ -1,6 +1,7 @@
-# DoReI
+# DoReI - doNate&Quest
 ## Bridge the gap to help the needy
-EchoForMe is a Web Application that reads out the latest news to the user.It is designed especially for visually impaired people to help them by reading out the daily news to them.It is a user-friendly application that can be used by people of all generations.It seeks to address challenges faced by physically challenged people or children while learning,people who focus more on verbal concepts of teaching and also for those who wish to learn the way of recitation and pronunciation of english language words.
+DoReI is a Web Application through which people can donate and request for books and various stationery items (such as pens, pencils, bags etc) to
+or from the organisation. It allows keeping records of all the donations, transactions and items donated or requested by users. It maintains these transactions at the software level while the physical transaction of collecting the books from donors and delivering them is verified by the managers of the application. Two seperate portals and interfaces for the user and manager helps in accomplishing this aim.
 
 ## Demo of the project
 Demo of the application can be found at the youtube link : 
@@ -8,7 +9,9 @@ Demo of the application can be found at the youtube link :
 ## Prerequisites :
 - [Django](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction)
 - Front end development tools
-- Tested on linux machine
+
+## Testing :
+- Used virtual python environment on a linux machine
 
 ## Setting Up virtual Python3 environment
 1.Follow the commands to create a environemnt "env" and activate it
