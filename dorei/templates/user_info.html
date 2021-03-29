@@ -2,11 +2,18 @@
 
 {% block content %}
   <body class="img js-fullheight" style="background-color: #928DAB;">
+
+  {% if message %}
+    <script>
+      alert('{{ message }}');
+    </script>
+  {% endif %}
+
   <section class="ftco-section">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-6 text-center mb-5">
-          <h2 class="heading-section">Your user id : {{id}}</h2>
+          <h2 class="heading-section">Hello {{user_name}} !</h2>
         </div>
       </div>
 

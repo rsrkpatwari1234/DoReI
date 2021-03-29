@@ -14,7 +14,7 @@ import json
 
 # inserting using raw sql of django
 def insert_using_raw_sql(sql):
-    print('sql - ', sql)
+    #print('sql - ', sql)
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
@@ -25,7 +25,7 @@ def insert_using_raw_sql(sql):
 
 # updating using raw sql of django
 def update_using_raw_sql(sql):
-    print('sql - ', sql)
+    #print('sql - ', sql)
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
@@ -36,7 +36,7 @@ def update_using_raw_sql(sql):
 
 # select using raw sql of django
 def select_using_raw_sql(sql):
-    print('sql - ', sql)
+    #print('sql - ', sql)
     cursor = connection.cursor()
     try:
         cursor.execute(sql)
@@ -134,6 +134,8 @@ def signOut(request):
 # transaction details and features available to the user of the application
 def transaction(request, user_id):
 
+    user_name = select_using_raw_sql("SELECT UPPER(first_name) FROM dorei_user as du WHERE du.user_id =" + str(user_id))
+
     total_charity = select_using_raw_sql("SELECT SUM(dm.amount) FROM dorei_money AS dm")
     
     books_donated = select_using_raw_sql("SELECT COUNT(db.isbn) FROM dorei_bookdonate AS db WHERE db.is_collected=1")
@@ -172,6 +174,7 @@ def transaction(request, user_id):
 
     data = {
             'id':user_id,
+            'user_name':user_name[0]['UPPER(first_name)'],
             'charity':total_charity[0]['SUM(dm.amount)'],
             'books_donated':books_donated[0]['COUNT(db.isbn)'],
             'stationery_donated':stationery_donated[0]['SUM(ds.quantity)'],
@@ -320,6 +323,8 @@ def request_stationery(request, user_id, stationery_id):
 # transaction and phone number details of a particular user
 def user_info(request, user_id):
 
+    user_name = select_using_raw_sql("SELECT UPPER(first_name) FROM dorei_user as du WHERE du.user_id =" + str(user_id))
+
     m_donations = select_using_raw_sql("SELECT dm.amount as amount,date(dm.t_time) as t_time FROM dorei_money AS dm WHERE dm.user_id="+str(user_id))
     
     br_donations = select_using_raw_sql("SELECT UPPER(db.title) as title,db.subject as subject,db.author as author,date(dbd.t_time) as t_time FROM dorei_bookdonate AS dbd,dorei_book as db\
@@ -347,18 +352,24 @@ def user_info(request, user_id):
     phone_number = select_using_raw_sql("SELECT p.phone_number AS phone_number FROM dorei_phonenumber AS p\
      WHERE p.user_id="+str(user_id))
 
+    message = ""
+
     if request.method == "POST":
         
         command = "INSERT INTO dorei_phonenumber(user_id,phone_number) values("+str(user_id)+","+str(request.POST.get("phone_number"))+")"
         if insert_using_raw_sql(command):
             phone_number = select_using_raw_sql("SELECT p.phone_number AS phone_number FROM dorei_phonenumber AS p\
                 WHERE p.user_id="+str(user_id))
-            messages.success(request, 'Phone number stored.')
+            # messages.success(request, 'Phone number stored.')
+            message = "Successfully received your phone number!"
         else:
-            messages.error(request, 'Internal error! Try again.')
+            # messages.error(request, 'Internal error! Try again.')
+            message = "Internal Error Occurred! Try Again."
 
     data = {
+            'message':message,
             'id':user_id,
+            'user_name':user_name[0]['UPPER(first_name)'],
             'm_donations':m_donations,
             'br_donations':br_donations,
             'bnr_donations':bnr_donations,
@@ -382,14 +393,15 @@ def logIn_manager(request):
         if results:
             for user in results:
                 if user['password'] == request.POST.get("password"):
-                    return redirect(reverse('manage'))
+                    message = "Successfully logged In"
+                    return redirect(reverse('manage', kwargs={"message":message}))
         else:
             messages.error(request, 'Email id or password does not match!')
             
     return render(request, 'logInManager.html')
 
 # Overall transactions and facilities available to the manager
-def manage(request):
+def manage(request, message):
 
     total_charity = select_using_raw_sql("SELECT SUM(dm.amount) FROM dorei_money AS dm")
 
@@ -426,6 +438,7 @@ def manage(request):
     #print(json.dumps(stationery_requests,indent=4))
 
     data = {
+            'message':message,
             'total_charity':total_charity[0]['SUM(dm.amount)'],
             'books_donated':books_donated[0]['COUNT(db.isbn)'],
             'stationery_donated':stationery_donated[0]['SUM(ds.quantity)'],
@@ -457,8 +470,11 @@ def isdonated_book(request,user_id,isbn):
 # manager can verify the request for a book by any user
 def isrequested_book(request,user_id,isbn):
     command = "UPDATE dorei_bookrequest SET is_delivered=1 WHERE user_id="+str(user_id)+" AND isbn='"+str(isbn)+"'"
-    update_using_raw_sql(command)
-    return redirect(reverse('manage'))
+    if update_using_raw_sql(command):
+        message = "Book request successfully approved."
+    else:
+        message = "Internal Error occured while approving request.Try Again."
+    return redirect(reverse('manage', kwargs={"message":message}))
 
 # manager can verify the donation of a stationery by any user
 def isdonated_stationery(request,user_id,t_time):
@@ -472,17 +488,20 @@ def isdonated_stationery(request,user_id,t_time):
     update_using_raw_sql(command)
 
     results = select_using_raw_sql("SELECT * FROM dorei_stationery")
-    print(json.dumps(results,indent=4))
+    #print(json.dumps(results,indent=4))
 
-    return redirect(reverse('manage'))
+    message = "Stationery donation successfully approved."
+
+    return redirect(reverse('manage', kwargs={"message":message}))
 
 # manager can verify the request for a stationery by any user
 def isrequested_stationery(request,user_id,t_time):
     command = "UPDATE dorei_stationeryrequest SET is_delivered=1 WHERE user_id="+str(user_id)+" AND t_time='"+str(t_time)+"'"
-    #print(user_id,isbn)
-    #print(command)
-    update_using_raw_sql(command)
-    return redirect(reverse('manage'))
+    if update_using_raw_sql(command):
+        message = "Stationery request successfully approved!"
+    else:
+        message = "Internal Error occured while approving request.Try Again!"
+    return redirect(reverse('manage', kwargs={"message":message}))
 
 # manager sets the location for a book
 def locate_book(request):
@@ -495,11 +514,16 @@ def locate_book(request):
 
         result = select_using_raw_sql("SELECT * FROM dorei_location AS dl WHERE dl.floor="+str(floor)+" AND dl.room="+str(room)+" AND dl.shelf="+str(shelf))
 
+        message = ""
+
         if len(result) == 0:
             command = "INSERT INTO dorei_location(floor,room,shelf) VALUES("+str(floor)+","+str(room)+","+str(shelf)+")"
             if insert_using_raw_sql(command):
                 result = select_using_raw_sql("SELECT location_id FROM dorei_location AS dl WHERE dl.floor="+str(floor)+" AND dl.room="+str(room)+" AND dl.shelf="+str(shelf))
                 update_using_raw_sql("UPDATE dorei_book SET location_id="+str(result[0]['location_id'])+" WHERE isbn='"+str(isbn)+"'")
+                message = "Book donation successfully approved! Location is updated as well :)"
         else:
+            message = "Internal Error occured while approving request.Try Again!"
             return render(request, 'locate_book.html', {'isbn':isbn})
-    return redirect(reverse('manage'))
+
+    return redirect(reverse('manage', kwargs={"message":message}))

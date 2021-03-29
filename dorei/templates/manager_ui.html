@@ -1,7 +1,15 @@
 {% extends "base_generic.html" %}
-
 {% block content %}
-  <body class="img js-fullheight" style="background-color: #928DAB;">
+<body class="img js-fullheight" style="background-color: #928DAB;">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>
+
+  {% if message %}
+    <script>
+      alert('{{ message }}');
+    </script>
+  {% endif %}
+  
   <section class="ftco-section">
     <div class="container">
       <div class="row justify-content-center">
@@ -21,255 +29,274 @@
         </div>
       </div>
 
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <h2 class="heading-section"><u>Charity Details</u></h2>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+           <a class="nav-link active" id="charity-tab" data-toggle="tab" href="#charity" role="tab" aria-controls="charity" aria-selected="true">Charity</a>
+        </li>
+        <li class="nav-item">
+           <a class="nav-link" id="user-tab" data-toggle="tab" href="#user" role="tab" aria-controls="user" aria-selected="false">User</a>
+        </li>
+        <li class="nav-item">
+           <a class="nav-link" id="book-tab" data-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="false">Books</a>
+        </li>
+        <li class="nav-item">
+           <a class="nav-link" id="stationery-tab" data-toggle="tab" href="#stationery" role="tab" aria-controls="stationery" aria-selected="false">Stationery</a>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane show active" id="charity" role="tabpanel" aria-labelledby="charity-tab">
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <h2 class="heading-section"><u>Charity Details</u></h2>
+            </div>
+          </div>
+          {% if charity_details %}
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>Date of Money donation</th>
+              <th>User ID</th>
+              <th>Amount</th>
+            </tr>
+            {% for donation in charity_details %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td >{{donation.t_time}}</td>
+              <td>{{donation.user_id}}</td>
+              <td >{{donation.amount}}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
         </div>
-      </div>
 
-      {% if charity_details %}
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>Date of Money donation</th>
-          <th>User ID</th>
-          <th>Amount</th>
-        </tr>
-        {% for donation in charity_details %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td >{{donation.t_time}}</td>
-          <td>{{donation.user_id}}</td>
-          <td >{{donation.amount}}</td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
-
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <h2 class="heading-section"><u>User Details</u></h2>
+        <div class="tab-pane " id="user" role="tabpanel" aria-labelledby="user-tab">
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <h2 class="heading-section"><u>User Details</u></h2>
+            </div>
+          </div>
+          {% if user_details %}
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Zip Code</th>
+            </tr>
+            {% for user in user_details %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td >{{user.user_id}}</td>
+              <td >{{user.name}}</td>
+              <td >{{user.email}}</td>
+              <td >{{user.city}}</td>
+              <td >{{user.state}}</td>
+              <td >{{user.postal_code}}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
         </div>
-      </div>
 
-      {% if user_details %}
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>City</th>
-          <th>State</th>
-          <th>Zip Code</th>
-        </tr>
-        {% for user in user_details %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td >{{user.user_id}}</td>
-          <td >{{user.name}}</td>
-          <td >{{user.email}}</td>
-          <td >{{user.city}}</td>
-          <td >{{user.state}}</td>
-          <td >{{user.postal_code}}</td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
+        <div class="tab-pane " id="book" role="tabpanel" aria-labelledby="book-tab">
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <br></br>
+              <h2 class="heading-section"><u>Book Locations</u></h2>
+            </div>
+          </div>
+          {% if book_location %}
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>Isbn</th>
+              <th>Title</th>
+              <th>Floor</th>
+              <th>Room</th>
+              <th>Shelf</th>
+            </tr>
+            {% for donation in book_location %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td>{{donation.isbn}}</td>
+              <td>{{donation.title}}</td>
+              <td>{{donation.floor}}</td>
+              <td>{{donation.room}}</td>
+              <td>{{donation.shelf}}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
 
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>Book Locations</u></h2>
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <br></br>
+              <h2 class="heading-section"><u>Book Donations</u></h2>
+            </div>
+          </div>
+          {% if book_donations %}
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>Date</th>
+              <th>Donor Id</th>
+              <th>Isbn</th>
+              <th>Title</th>
+              <th>Subject</th>
+              <th>Status</th>
+            </tr>
+            {% for donation in book_donations %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td>{{donation.t_time}}</td>
+              <td>{{donation.user_id}}</td>
+              <td>{{donation.isbn}}</td>
+              <td>{{donation.title}}</td>
+              <td>{{donation.subject}}</td>
+              <td>
+                {% if donation.verify == 'True' %}
+                  Already Collected
+                {% else %}
+                  <a href="{% url 'isdonated_book' user_id=donation.user_id  isbn=donation.isbn%}">
+                    <button type="submit" class="form-control btn btn-primary submit px-3">Collected</button>
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
+
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <br></br>
+              <h2 class="heading-section"><u>Book Requests</u></h2>
+            </div>
+          </div>
+          {% if book_requests %}
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>Date</th>
+              <th>Donor Id</th>
+              <th>ISBN</th>
+              <th>Title</th>
+              <th>Subject</th>
+              <th>Status</th>
+            </tr>
+            {% for request in book_requests %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td>{{request.t_time}}</td>
+              <td>{{request.user_id}}</td>
+              <td>{{request.isbn}}</td>
+              <td>{{request.title}}</td>
+              <td>{{request.subject}}</td>
+              <td>
+                {% if request.verify == 'True' %}
+                  Request fulfilled
+                {% else %}
+                  <a href="{% url 'isrequested_book' user_id=request.user_id  isbn=request.isbn%}">
+                    <button type="submit" class="form-control btn btn-primary submit px-3">Pending</button>
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
         </div>
-      </div>
 
-      {% if book_location %}
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>Isbn</th>
-          <th>Title</th>
-          <th>Floor</th>
-          <th>Room</th>
-          <th>Shelf</th>
-        </tr>
-        {% for donation in book_location %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td>{{donation.isbn}}</td>
-          <td>{{donation.title}}</td>
-          <td>{{donation.floor}}</td>
-          <td>{{donation.room}}</td>
-          <td>{{donation.shelf}}</td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
+        <div class="tab-pane " id="stationery" role="tabpanel" aria-labelledby="stationery-tab">
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <br></br>
+              <h2 class="heading-section"><u>Available Stationery</u></h2>
+            </div>
+          </div>
+          {% if available_stationery %}
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>Category</th>
+              <th>Quantity</th>
+            </tr>
+            {% for stationery in available_stationery %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td >{{stationery.name}}</td>
+              <td >{{stationery.tot_quantity}}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
 
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>Book Donations</u></h2>
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <br></br>
+              <h2 class="heading-section"><u>Stationery Donations</u></h2>
+            </div>
+          </div>
+          {% if stationery_donations %}
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>Date & time</th>
+              <th>Donor Id</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Status</th>
+            </tr>
+            {% for donation in stationery_donations %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td>{{donation.t_time}}</td>
+              <td>{{donation.user_id}}</td>
+              <td>{{donation.name}}</td>
+              <td>{{donation.quantity}}</td>
+              <td>
+                {% if donation.verify == 'True' %}
+                  Already Collected
+                {% else %}
+                  <a href="{% url 'isdonated_stationery' user_id=donation.user_id  t_time=donation.t_time%}">
+                    <button type="submit" class="form-control btn btn-primary submit px-3">Collected</button>
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
+
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+              <br></br>
+              <h2 class="heading-section"><u>Stationery Requests</u></h2>
+            </div>
+          </div>
+          {% if stationery_requests %}      
+          <table style="width:100%">
+            <tr class="heading-section" style="color:#FFB6C1;">
+              <th>Date & time</th>
+              <th>Donor Id</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Status</th>
+            </tr>
+            {% for request in stationery_requests %}
+            <tr class="heading-section" style="color:#FFFFFF">
+              <td>{{request.t_time}}</td>
+              <td>{{request.user_id}}</td>
+              <td>{{request.name}}</td>
+              <td>{{request.quantity}}</td>
+              <td>
+                {% if request.verify == 'True' %}
+                  Request fulfilled
+                {% else %}
+                  <a href="{% url 'isrequested_stationery' user_id=request.user_id  t_time=request.t_time%}">
+                    <button type="submit" class="form-control btn btn-primary submit px-3">Pending</button>
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
         </div>
+
       </div>
-
-      {% if book_donations %}
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>Date</th>
-          <th>Donor Id</th>
-          <th>Isbn</th>
-          <th>Title</th>
-          <th>Subject</th>
-          <th>Status</th>
-        </tr>
-        {% for donation in book_donations %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td>{{donation.t_time}}</td>
-          <td>{{donation.user_id}}</td>
-          <td>{{donation.isbn}}</td>
-          <td>{{donation.title}}</td>
-          <td>{{donation.subject}}</td>
-          <td>
-            {% if donation.verify == 'True' %}
-              Already Collected
-            {% else %}
-              <a href="{% url 'isdonated_book' user_id=donation.user_id  isbn=donation.isbn%}">
-                <button type="submit" class="form-control btn btn-primary submit px-3">Collected</button>
-              </a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
-
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>Book Requests</u></h2>
-        </div>
-      </div>
-
-      {% if book_requests %}
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>Date</th>
-          <th>Donor Id</th>
-          <th>ISBN</th>
-          <th>Title</th>
-          <th>Subject</th>
-          <th>Status</th>
-        </tr>
-        {% for request in book_requests %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td>{{request.t_time}}</td>
-          <td>{{request.user_id}}</td>
-          <td>{{request.isbn}}</td>
-          <td>{{request.title}}</td>
-          <td>{{request.subject}}</td>
-          <td>
-            {% if request.verify == 'True' %}
-              Request fulfilled
-            {% else %}
-              <a href="{% url 'isrequested_book' user_id=request.user_id  isbn=request.isbn%}">
-                <button type="submit" class="form-control btn btn-primary submit px-3">Pending</button>
-              </a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
-
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>Available Stationery</u></h2>
-        </div>
-      </div>
-
-      {% if available_stationery %}
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>Category</th>
-          <th>Quantity</th>
-        </tr>
-        {% for stationery in available_stationery %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td >{{stationery.name}}</td>
-          <td >{{stationery.tot_quantity}}</td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
-
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>Stationery Donations</u></h2>
-        </div>
-      </div>
-
-      {% if stationery_donations %}
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>Date & time</th>
-          <th>Donor Id</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>Status</th>
-        </tr>
-        {% for donation in stationery_donations %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td>{{donation.t_time}}</td>
-          <td>{{donation.user_id}}</td>
-          <td>{{donation.name}}</td>
-          <td>{{donation.quantity}}</td>
-          <td>
-            {% if donation.verify == 'True' %}
-              Already Collected
-            {% else %}
-              <a href="{% url 'isdonated_stationery' user_id=donation.user_id  t_time=donation.t_time%}">
-                <button type="submit" class="form-control btn btn-primary submit px-3">Collected</button>
-              </a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
-
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center mb-5">
-          <br></br>
-          <h2 class="heading-section"><u>Stationery Requests</u></h2>
-        </div>
-      </div>
-      
-      {% if stationery_requests %}      
-      <table style="width:100%">
-        <tr class="heading-section" style="color:#FFB6C1;">
-          <th>Date & time</th>
-          <th>Donor Id</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>Status</th>
-        </tr>
-        {% for request in stationery_requests %}
-        <tr class="heading-section" style="color:#FFFFFF">
-          <td>{{request.t_time}}</td>
-          <td>{{request.user_id}}</td>
-          <td>{{request.name}}</td>
-          <td>{{request.quantity}}</td>
-          <td>
-            {% if request.verify == 'True' %}
-              Request fulfilled
-            {% else %}
-              <a href="{% url 'isrequested_stationery' user_id=request.user_id  t_time=request.t_time%}">
-                <button type="submit" class="form-control btn btn-primary submit px-3">Pending</button>
-              </a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
 
       <div class="row justify-content-center">
         <div class="col form-group">
