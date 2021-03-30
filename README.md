@@ -4,7 +4,7 @@ DoReI is a Web Application through which people can donate and request for books
 or from the organisation. It allows keeping records of all the donations, transactions and items donated or requested by users. It maintains these transactions at the software level while the physical transaction of collecting the books from donors and delivering them is verified by the managers of the application. Two seperate portals and interfaces for the user and manager helps in accomplishing this aim.
 
 ## Demo of the project
-Demo of the application can be found at the youtube link : 
+Demo of the application can be found at the youtube link : https://www.youtube.com/watch?v=6zkJnkooPbA
 
 ## Prerequisites :
 - [Django](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction)
