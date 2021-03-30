@@ -61,5 +61,8 @@ python3 manage.py runserver
 
 ## Organisation 
 This project is created as a part of the Database and Management Course [CS43002] of IIT Kharagpur
- 
 
+## Group Members
+-[Harshita Boonlia](https://github.com/harshita-555/)
+-[Radhika Patwari](https://github.com/rsrkpatwari1234/)
+-[Nandini Jalan](https://github.com/nandinijalan1115/)
